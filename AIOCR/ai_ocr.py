@@ -30,6 +30,41 @@ def remove_hash_symbol(text):
         return text
     return text.replace("#", "")
 
+def strip_thinking_content(content):
+    """移除模型返回的思维链内容（如 </think>、<thought>...</thought> 等）。
+
+    推理模型（如 MiniCPM-V 4.6、DeepSeek-R1、QwQ、Qwen3 等）会在最终回答前
+    输出思维链，需去除以免污染 OCR 结果。
+
+    支持处理以下情况：
+    - 成对标签：<tag>...</tag>（删除整块）
+    - 仅有闭标签：...</tag>（删除闭标签及之前内容，保留之后内容）
+    - 仅有开标签：<tag>...（删除开标签及之后内容）
+    """
+    if not isinstance(content, str) or not content:
+        return content
+
+    # 处理常见思维链标签
+    for tag in ("think", "reasoning", "thought", "reflection"):
+        # 1. 成对标签：删除整块思维链内容 <tag>...</tag>
+        content = re.sub(
+            rf"<{tag}>.*?</{tag}>",
+            "",
+            content,
+            flags=re.DOTALL | re.IGNORECASE
+        )
+        # 2. 处理未闭合情况
+        open_match = re.search(rf"<{tag}>", content, re.IGNORECASE)
+        close_match = re.search(rf"</{tag}>", content, re.IGNORECASE)
+        if open_match and not close_match:
+            # 仅有开标签：删除开标签及之后所有内容
+            content = content[:open_match.start()]
+        elif close_match and not open_match:
+            # 仅有闭标签：删除闭标签及之前所有内容
+            content = content[close_match.end():]
+
+    return content.strip()
+
 # Provider基类
 class BaseProvider:
     """AI OCR服务提供商基类"""
@@ -699,6 +734,8 @@ class OllamaProvider(BaseProvider):
             data = json.loads(response_text)
             if "response" in data:
                 content = data["response"]
+                # 移除推理模型（如 MiniCPM-V 4.6、DeepSeek-R1、Qwen3 等）输出的思维链内容
+                content = strip_thinking_content(content)
                 return content
             else:
                 return None
