@@ -2,7 +2,7 @@
 
 ## 🚀 项目简介
 
-本插件为 **Umi-OCR** 提供 **21个主流AI服务商** 的OCR功能，支持云端和本地AI服务的视觉识别API。作为离线OCR的强力补充，为用户提供更高精度、更广泛语言支持的智能文字识别服务。
+本插件为 **Umi-OCR** 提供 **25+ 主流AI服务商** 的OCR功能，支持云端和本地AI服务的视觉识别API。作为离线OCR的强力补充，为用户提供更高精度、更广泛语言支持的智能文字识别服务。
 
 ## 📋 关于 Umi-OCR
 
@@ -45,6 +45,7 @@
 | **MinerU系列** | pipeline(默认)/vlm(推荐) /MinerU-HTML/MinerU 2.5系列（官网暂未上线，上线后支持直接调用） | 行业领先的文档解析服务商，尤其擅长处理非标准和复杂文档，拥有**顶尖OCR模型**，中外文识别**极其优秀**，**非常推荐**|
 | **小米MiMo** | mimo-v2.5/mimo-v2-omni | 小米自研AI模型，支持图片理解，**支持专属Base URL**（Code套餐用户可使用 token-plan-cn.xiaomimimo.com）|
 | **Longcat AI** | LongCat-Flash-Chat/LongCat-Flash-Thinking | 美团旗下AI平台，兼容OpenAI和Anthropic API格式，每日免费Token额度 |
+| **Agnes** | agnes-2.0-flash | 兼容OpenAI API格式，支持视觉识别，响应速度快 |
 
 ### 🏠 本地服务商（离线识别）
 | 服务商 | 建议模型 | 特点 |
@@ -93,7 +94,7 @@
 |------|------|
 | 🚀 **高精度识别** | 基于最新的AI视觉模型，支持多种语言文字识别 |
 | 🌍 **多语言支持** | 支持中文、英文、日文、韩文、法文、德文、西班牙文、俄文、阿拉伯文等 |
-| ⚡ **多厂商选择** | 支持21个AI服务商，包括OpenAI、Gemini、xAI、OpenRouter、硅基流动、豆包等 |
+| ⚡ **多厂商选择** | 支持25+ AI服务商，包括OpenAI、Gemini、xAI、OpenRouter、硅基流动、豆包、Agnes等 |
 | 📍 **坐标提取** | 可选择输出文字的位置坐标信息 |
 | 📝 **Markdown输出** | 支持以Markdown格式直接输出识别结果，保留标题、列表、表格等结构 |
 | 🔧 **灵活配置** | 支持图像质量、尺寸、超时等多项参数调整 |
@@ -266,6 +267,13 @@
 4. 默认API地址：`https://api.longcat.chat/openai/v1`
 5. 支持模型：LongCat-Flash-Chat、LongCat-Flash-Thinking、LongCat-Flash-Lite 等
 
+### Agnes
+1. 访问 [Agnes 开放平台](https://agnes-ai.com/)
+2. 注册账号并创建API密钥
+3. 兼容OpenAI API格式，支持视觉识别
+4. 默认API地址：`https://apihub.agnes-ai.com/v1`
+5. 支持模型：agnes-2.0-flash 等
+
 ### 百度飞桨OCR
 1. 访问 [AI Studio](https://aistudio.baidu.com/account/accessToken) 获取 Access Token
 2. 支持模型：PP-OCRv6 / PaddleOCR-VL-1.6 / PP-StructureV3
@@ -365,6 +373,7 @@
 
 
 ## 📝 版本历史
+- **v3.0.3**：✨ **新增** - 添加 Agnes 平台支持（兼容 OpenAI API 格式，默认模型 `agnes-2.0-flash`，默认地址 `https://apihub.agnes-ai.com/v1`）。
 - **v3.0.2**：🐛 **修复** - 修复 Ollama 平台使用推理模型（如 `openbmb/minicpm-v4.6`）时识别结果混入思维链内容的问题。新增通用思维链剥离函数 `strip_thinking_content`，自动移除 `...`、`<reasoning>...</reasoning>`、`<thought>...</thought>` 等推理模型输出的思维链标签（支持成对、仅开标签、仅闭标签及大小写不敏感），确保 OCR 结果干净。修复应用于 OllamaProvider 响应解析。
 - **v3.0.1**：🐛 **重要修复** - 修复双通道模式下 Paddle 在线服务商（PaddleOCR-VL-1.6 / PP-StructureV3）完全不识别的问题。原实现将每个检测框裁剪后逐一发送到在线 API 识别，但 VL-1.6/StructureV3 是版面分析模型，对裁剪后的小文本块返回空结果，导致所有文本为空。现改为整图调用一次 API，再按行顺序匹配到本地检测框，同时将 N 次异步请求降为 1 次，大幅提升速度。检测器参数（box_thresh、merge_y_ratio、det_thresh、unclip_ratio）现可在设置面板配置；v6 检测器新增自适应 padding 以改善边缘文字检测。
 - **v3.0.0**：🚀 **重大更新** - 双通道模式全面升级！将本地检测模块从基于C++的PP-OCRv3替换为基于ONNX的PP-OCRv6，速度更快、精度更高、体积更小（约40MB）。新增检测器版本和模型大小配置项，用户可选择Small/Medium/Tiny模型。修复检测模块遮蔽AI识别结果的问题：检测器现在仅负责文本块定位，不再返回识别文本，识别任务完全交由AI完成。新增腾讯混元（Hunyuan）平台支持；移除无问芯穹（Infinigence）平台（官方已停止个人用户服务）。

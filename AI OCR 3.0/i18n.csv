@@ -162,4 +162,10 @@ llama.cpp 模型,llama.cpp Model,llama.cpp 模型,llama.cpp 模型,llama.cpp モ
 llama.cpp加载的模型名称，可通过 /v1/models 端点查询。,"Model name loaded by llama.cpp, queryable via /v1/models endpoint.",llama.cpp加载的模型名称，可通过 /v1/models 端点查询。,llama.cpp加載的模型名稱，可通過 /v1/models 端點查詢。,llama.cppで読み込まれたモデル名。/v1/models エンドポイントで確認可能。,,,,,,,,,
 llama.cpp API地址,llama.cpp API URL,llama.cpp API地址,llama.cpp API位址,llama.cpp API URL,,,,,,,,,
 llama.cpp本地服务的API地址，默认为 http://localhost:8080/v1,llama.cpp local service API URL, default: http://localhost:8080/v1,llama.cpp本地服务的API地址，默认为 http://localhost:8080/v1,llama.cpp本地服務的API位址，默認為 http://localhost:8080/v1,llama.cppローカルサービスのAPI URL、デフォルト：http://localhost:8080/v1,,,,,,,,,
+Agnes API密钥,Agnes API Key,Agnes API密钥,Agnes API金鑰,Agnes APIキー,,,,,,,,,
+请输入Agnes平台的API Key,Please enter Agnes API key,请输入Agnes平台的API Key,請輸入Agnes平台的API Key,AgnesのAPIキーを入力してください,,,,,,,,,
+Agnes 模型,Agnes Model,Agnes 模型,Agnes 模型,Agnes モデル,,,,,,,,,
+Agnes模型名称，如：agnes-2.0-flash,Agnes model name such as: agnes-2.0-flash,Agnes模型名称，如：agnes-2.0-flash,Agnes模型名稱，如：agnes-2.0-flash,Agnesモデル名、例：agnes-2.0-flash,,,,,,,,,
+Agnes API地址,Agnes API URL,Agnes API地址,Agnes API位址,Agnes API URL,,,,,,,,,
+Agnes的API地址，默认：https://apihub.agnes-ai.com/v1,Agnes API URL, default: https://apihub.agnes-ai.com/v1,Agnes的API地址，默认：https://apihub.agnes-ai.com/v1,Agnes的API位址，默認：https://apihub.agnes-ai.com/v1,AgnesのAPI URL、デフォルト：https://apihub.agnes-ai.com/v1,,,,,,,,,
 

@@ -110,6 +110,10 @@ PROVIDER_CONFIGS = {
         "api_base": "https://api.longcat.chat/openai/v1",
         "model": "LongCat-Flash-Chat",
     },
+    "agnes": {
+        "api_base": "https://apihub.agnes-ai.com/v1",
+        "model": "agnes-2.0-flash",
+    },
 }
 
 # 获取服务商默认配置的辅助函数
@@ -201,6 +205,7 @@ globalOptions = {
             ["paddle_vl_16", "PaddleOCR-VL-1.6 (在线)"],
             ["pp_structure_v3", "PP-StructureV3 (在线)"],
             ["longcat", "Longcat AI"],
+            ["agnes", "Agnes"],
 
         ],
         "toolTip": tr("选择当前要使用的AI服务商。所有服务商的配置都会保存，切换时无需重新输入。"),
@@ -589,6 +594,27 @@ globalOptions = {
         "advanced": True,
     },
 
+    # Agnes配置
+    "agnes_api_key": {
+        "title": tr("Agnes API密钥"),
+        "default": "",
+        "type": "text",
+        "toolTip": tr("请输入Agnes平台的API Key"),
+    },
+    "agnes_model": {
+        "title": tr("Agnes 模型"),
+        "default": "agnes-2.0-flash",
+        "type": "text",
+        "toolTip": tr("Agnes模型名称，如：agnes-2.0-flash"),
+    },
+    "agnes_api_base": {
+        "title": tr("Agnes API地址"),
+        "default": "https://apihub.agnes-ai.com/v1",
+        "type": "text",
+        "toolTip": tr("Agnes的API地址，默认：https://apihub.agnes-ai.com/v1"),
+        "advanced": True,
+    },
+
     # PaddleOCR 在线配置（异步解析模式）
     "paddle_api_key": {
         "title": tr("PaddleOCR Token"),
@@ -709,6 +735,7 @@ localOptions = {
             ["paddle_vl_16", "PaddleOCR-VL-1.6 (在线)"],
             ["pp_structure_v3", "PP-StructureV3 (在线)"],
             ["longcat", "Longcat AI"],
+            ["agnes", "Agnes"],
         ],
         "toolTip": tr("选择当前AI服务商。默认跟随全局设置，也可在此直接切换（切换后全局设置同步更新）。"),
     },

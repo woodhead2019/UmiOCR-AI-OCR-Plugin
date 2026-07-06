@@ -1435,6 +1435,64 @@ class LongcatProvider(BaseProvider):
             raise Exception(f"解析Longcat响应失败: {str(e)}")
 
 
+# Agnes Provider
+class AgnesProvider(BaseProvider):
+    """Agnes服务提供商 - OpenAI兼容API"""
+
+    def get_default_api_base(self):
+        return "https://apihub.agnes-ai.com/v1"
+
+    def get_default_model(self):
+        return "agnes-2.0-flash"
+
+    def build_headers(self):
+        return {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.api_key}"
+        }
+
+    def build_payload(self, image_base64, prompt):
+        return {
+            "model": self.model or self.get_default_model(),
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt},
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/jpeg;base64,{image_base64}"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "max_tokens": 4000
+        }
+
+    def parse_response(self, response_text):
+        try:
+            if not response_text or not response_text.strip():
+                raise Exception("服务器返回了空响应")
+
+            data = json.loads(response_text)
+
+            if "error" in data:
+                error_msg = data["error"].get("message", str(data["error"]))
+                raise Exception(f"API错误: {error_msg}")
+
+            if "choices" in data and len(data["choices"]) > 0:
+                content = data["choices"][0]["message"]["content"]
+                return content
+            else:
+                return None
+        except json.JSONDecodeError:
+            raise Exception(f"解析Agnes响应失败: 无效的JSON格式。服务器返回内容: {response_text[:500]}")
+        except Exception as e:
+            raise Exception(f"解析Agnes响应失败: {str(e)}")
+
+
 # llama.cpp Provider (本地)
 class LlamaCppProvider(BaseProvider):
     """llama.cpp本地服务提供商 - OpenAI兼容API"""
@@ -1519,6 +1577,7 @@ class ProviderFactory:
             "paddle_vl_16": PaddleVL16Provider,  # 新增：PaddleOCR-VL-1.6 Provider
             "pp_structure_v3": PPStructureV3Provider,  # 新增：PP-StructureV3 Provider
             "longcat": LongcatProvider,  # 新增：Longcat AI Provider
+            "agnes": AgnesProvider,  # 新增：Agnes Provider
             "llamacpp": LlamaCppProvider,
 
         }

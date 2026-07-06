@@ -2,7 +2,7 @@
 
 ## 🚀 项目简介
 
-本插件为 **Umi-OCR** 提供 **21个主流AI服务商** 的OCR功能，支持云端和本地AI服务的视觉识别API。作为离线OCR的强力补充，为用户提供更高精度、更广泛语言支持的智能文字识别服务。
+本插件为 **Umi-OCR** 提供 **25+ 主流AI服务商** 的OCR功能，支持云端和本地AI服务的视觉识别API。作为离线OCR的强力补充，为用户提供更高精度、更广泛语言支持的智能文字识别服务。
 
 ## 📋 关于 Umi-OCR
 
@@ -45,6 +45,7 @@
 | **MinerU系列** | pipeline(默认)/vlm(推荐) /MinerU-HTML/MinerU 2.5系列（官网暂未上线，上线后支持直接调用） | 行业领先的文档解析服务商，尤其擅长处理非标准和复杂文档，拥有**顶尖OCR模型**，中外文识别**极其优秀**，**非常推荐**|
 | **小米MiMo** | mimo-v2.5/mimo-v2-omni | 小米自研AI模型，支持图片理解，**支持专属Base URL**（Code套餐用户可使用 token-plan-cn.xiaomimimo.com）|
 | **Longcat AI** | LongCat-Flash-Chat/LongCat-Flash-Thinking | 美团旗下AI平台，兼容OpenAI和Anthropic API格式，每日免费Token额度 |
+| **Agnes** | agnes-2.0-flash | 兼容OpenAI API格式，支持视觉识别，响应速度快 |
 
 ### 🏠 本地服务商（离线识别）
 | 服务商 | 建议模型 | 特点 |
@@ -93,7 +94,7 @@
 |------|------|
 | 🚀 **高精度识别** | 基于最新的AI视觉模型，支持多种语言文字识别 |
 | 🌍 **多语言支持** | 支持中文、英文、日文、韩文、法文、德文、西班牙文、俄文、阿拉伯文等 |
-| ⚡ **多厂商选择** | 支持21个AI服务商，包括OpenAI、Gemini、xAI、OpenRouter、硅基流动、豆包等 |
+| ⚡ **多厂商选择** | 支持25+ AI服务商，包括OpenAI、Gemini、xAI、OpenRouter、硅基流动、豆包、Agnes等 |
 | 📍 **坐标提取** | 可选择输出文字的位置坐标信息 |
 | 📝 **Markdown输出** | 支持以Markdown格式直接输出识别结果，保留标题、列表、表格等结构 |
 | 🔧 **灵活配置** | 支持图像质量、尺寸、超时等多项参数调整 |
@@ -266,6 +267,13 @@
 4. 默认API地址：`https://api.longcat.chat/openai/v1`
 5. 支持模型：LongCat-Flash-Chat、LongCat-Flash-Thinking、LongCat-Flash-Lite 等
 
+### Agnes
+1. 访问 [Agnes 开放平台](https://agnes-ai.com/)
+2. 注册账号并创建API密钥
+3. 兼容OpenAI API格式，支持视觉识别
+4. 默认API地址：`https://apihub.agnes-ai.com/v1`
+5. 支持模型：agnes-2.0-flash 等
+
 ### 百度飞桨OCR
 1. 访问 [AI Studio](https://aistudio.baidu.com/account/accessToken) 获取 Access Token
 2. 支持模型：PP-OCRv6 / PaddleOCR-VL-1.6 / PP-StructureV3
@@ -365,6 +373,7 @@
 
 
 ## 📝 版本历史
+- **v3.0.3**：✨ **新增** - 添加 Agnes 平台支持（兼容 OpenAI API 格式，默认模型 `agnes-2.0-flash`，默认地址 `https://apihub.agnes-ai.com/v1`）。
 - **v3.0.0**：🚀 **重大更新** - 双通道模式全面升级！将本地检测模块从基于C++的PP-OCRv3替换为基于ONNX的PP-OCRv6，速度更快、精度更高、体积更小（约40MB）。新增检测器版本和模型大小配置项，用户可选择Small/Medium/Tiny模型。修复检测模块遮蔽AI识别结果的问题：检测器现在仅负责文本块定位，不再返回识别文本，识别任务完全交由AI完成。新增腾讯混元（Hunyuan）平台支持；移除无问芯穹（Infinigence）平台（官方已停止个人用户服务）。
 - **v2.9.9**：在各功能板块的"文字识别(AI OCR)"设置顶部新增"当前AI服务商"快捷切换，默认跟随全局设置，也可直接选择服务商覆盖（选择后全局设置同步更新），无需频繁打开全局设置即可切换服务商。
 - **v2.9.8**：百度PaddleOCR模型升级：将默认模型从PP-OCRv5升级至PP-OCRv6，API端点和请求格式保持不变，所有原有功能（文档扭曲矫正、文档方向分类、文本行方向矫正等）均可继续使用。
