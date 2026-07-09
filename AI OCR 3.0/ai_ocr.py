@@ -917,7 +917,7 @@ class MistralProvider(BaseProvider):
         return "https://api.mistral.ai/v1"
 
     def get_default_model(self):
-        return "pixtral-12b-2409"  # 默认使用视觉模型
+        return "mistral-ocr-latest"  # 默认使用OCR模型（即mistral-ocr-4-0）
 
     def build_headers(self):
         return {
@@ -1498,7 +1498,7 @@ class XFlyunProvider(BaseProvider):
     """讯飞星辰MaaS服务提供商 - OpenAI兼容API
     文档: https://www.xfyun.cn/doc/spark/推理服务-http.html
           https://www.xfyun.cn/doc/spark/图像理解API-http.html
-    支持模型: xoppaddleocrv16(PaddleOCR-VL-1.6)、xophunyuanocr(HunyuanOCR)、xop35qwen2b(Qwen3.5-2B)
+    支持模型: xoppaddleocrv16(PaddleOCR-VL-1.6)、xophunyuanocr(HunyuanOCR)
     注意: 讯飞平台模型名需使用xop前缀格式；DeepSeek-OCR暂不支持API调用
     """
 

@@ -467,9 +467,9 @@ globalOptions = {
     },
     "mistral_model": {
         "title": tr("Mistral 模型"),
-        "default": "pixtral-12b-2409",
+        "default": "mistral-ocr-latest",
         "type": "text",
-        "toolTip": tr("Mistral视觉模型名称，如：pixtral-12b-2409, mistral-large-latest"),
+        "toolTip": tr("Mistral OCR模型名称，推荐：mistral-ocr-latest（即mistral-ocr-4-0）；也可使用视觉模型如pixtral-12b-2409"),
     },
 
     # 新增：魔搭配置
@@ -496,7 +496,7 @@ globalOptions = {
         "title": tr("小米MiMo 模型"),
         "default": "mimo-v2.5",
         "type": "text",
-        "toolTip": tr("MiMo视觉模型名称，如：mimo-v2.5, mimo-v2-omni"),
+        "toolTip": tr("MiMo视觉模型名称，如：mimo-v2.5"),
     },
     "mimo_api_base": {
         "title": tr("小米MiMo API地址"),
@@ -631,7 +631,7 @@ globalOptions = {
         "title": tr("讯飞星辰 模型"),
         "default": "xoppaddleocrv16",
         "type": "text",
-        "toolTip": tr("讯飞星辰模型ID（从服务管控页面获取）。注意讯飞平台模型名与其他平台不同：xoppaddleocrv16（PaddleOCR-VL-1.6）、xophunyuanocr（HunyuanOCR）、xop35qwen2b（Qwen3.5-2B）；DeepSeek-OCR暂不支持API调用"),
+        "toolTip": tr("讯飞星辰模型ID（从服务管控页面获取）。注意讯飞平台模型名与其他平台不同：xoppaddleocrv16（PaddleOCR-VL-1.6）、xophunyuanocr（HunyuanOCR）；DeepSeek-OCR暂不支持API调用"),
     },
     "xflyun_api_base": {
         "title": tr("讯飞星辰 API地址"),

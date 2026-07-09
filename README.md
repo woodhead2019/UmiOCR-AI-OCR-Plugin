@@ -27,7 +27,7 @@
 | 服务商 | 建议模型 | 特点 |
 |--------|----------|------|
 | **硅基流动 (SiliconFlow)** | Qwen/Qwen3-VL-235B-A22B-Instruct （**强烈推荐**,**已下线**）或 PaddlePaddle/PaddleOCR-VL-1.6 | 开源模型多，价格低，速度快，**中文识别准确率超高**，**强烈推荐** |
-| **阿里云百炼 (Alibaba)** | Qwen/Qwen3-VL-235B-A22B-Instruct （**强烈推荐**）/qwen3.6-plus| **顶尖OCR模型**，中外文识别**极其优秀**，**强烈推荐**  |
+| **阿里云百炼 (Alibaba)** | Qwen/Qwen3-VL-235B-A22B-Instruct （**强烈推荐**）/qwen3.7-plus| **顶尖OCR模型**，中外文识别**极其优秀**，**强烈推荐**  |
 | **智谱AI (ZhipuAI)** | GLM-4.6V/GLM-OCR | 国产大模型，多模态能力强，**相当优秀** |
 | **豆包(Doubao)** | doubao-seed-2-0-pro/doubao-seed-1-8-251228 | 中文优化效果好，性价比高 |
 | **OpenAI** | gpt-5.5 | 高精度，多语言支持 |
@@ -37,16 +37,16 @@
 | **Groq** | meta-llama/llama-4-maverick-17b-128e-instruct | 高性能推理，速度极快 |
 | **魔搭 (ModelScope)** | Qwen/Qwen3-VL-235B-A22B-Instruct **（强烈推荐）** | 阿里达摩院开源平台，模型丰富，免费使用|
 | **腾讯混元 (Hunyuan)** | hy-vision-2.0-instruct | 腾讯自研多模态模型，支持图片理解，OpenAI兼容协议 |
-| **Mistral AI** | mistral-ocr-latest | 欧洲AI公司，视觉模型优秀，免费使用|
+| **Mistral AI** | mistral-ocr-4-0 (mistral-ocr-latest) | 欧洲AI公司，视觉模型优秀，免费使用|
 | **浦源书生 (Intern)** | intern-s2-preview/intern-s1-pro/internvl3.5-241b-a28b | 学术界AI平台，多模态能力强，免费使用，其中intern-s2-preview/intern-s1-pro为**优秀OCR模型**，中文识别**非常优秀**，**十分推荐**|
 | **Kimi（月之暗面）** | kimi-k2.6/kimi-k2.5 | 月之暗面AI平台，支持视觉模型，长文本处理能力强，**支持自定义Base URL**|
 | **NVIDIA NIM** | moonshotai/kimi-k2.6 | NVIDIA高性能推理平台，视觉模型优秀，**支持自定义Base URL**|
 | **百度PaddleOCR系列** | V3/V6/VL-1.6 | 百度飞桨平台，支持多语言识别，高效准确解析文档内容，其中PaddleOCR-VL-1.6 为**顶尖OCR模型**，中外文识别**极其优秀**，**非常推荐**|
 | **MinerU系列** | pipeline(默认)/vlm(推荐) /MinerU-HTML/MinerU 2.5系列（官网暂未上线，上线后支持直接调用） | 行业领先的文档解析服务商，尤其擅长处理非标准和复杂文档，拥有**顶尖OCR模型**，中外文识别**极其优秀**，**非常推荐**|
-| **小米MiMo** | mimo-v2.5/mimo-v2-omni | 小米自研AI模型，支持图片理解，**支持专属Base URL**（Code套餐用户可使用 token-plan-cn.xiaomimimo.com）|
+| **小米MiMo** | mimo-v2.5 | 小米自研AI模型，支持图片理解，**支持专属Base URL**（Code套餐用户可使用 token-plan-cn.xiaomimimo.com）|
 | **Longcat AI** | LongCat-Flash-Chat/LongCat-Flash-Thinking | 美团旗下AI平台，兼容OpenAI和Anthropic API格式，每日免费Token额度 |
 | **Agnes** | agnes-2.0-flash | 兼容OpenAI API格式，支持视觉识别，响应速度快 |
-| **讯飞星辰 (MaaS)** | xoppaddleocrv16/xophunyuanocr/xop35qwen2b | 讯飞开放平台MaaS服务，兼容OpenAI API格式，支持多模态视觉识别。注意模型名需用xop前缀格式 |
+| **讯飞星辰 (MaaS)** | xoppaddleocrv16/xophunyuanocr | 讯飞开放平台MaaS服务，兼容OpenAI API格式，支持多模态视觉识别。注意模型名需用xop前缀格式 |
 
 ### 🏠 本地服务商（离线识别）
 | 服务商 | 建议模型 | 特点 |
@@ -283,7 +283,6 @@
 5. **注意：讯飞平台模型名需使用xop前缀格式，与其他平台不同**：
    - `xoppaddleocrv16`（PaddleOCR-VL-1.6，默认）
    - `xophunyuanocr`（HunyuanOCR）
-   - `xop35qwen2b`（Qwen3.5-2B）
    - DeepSeek-OCR 暂不支持 API 调用
 
 ### 百度飞桨OCR
@@ -385,7 +384,7 @@
 
 
 ## 📝 版本历史
-- **v3.0.5**：🔧 **修复** - 修正讯飞星辰平台模型名：使用 xop 前缀格式（`xoppaddleocrv16`、`xophunyuanocr`、`xop35qwen2b`），注明 DeepSeek-OCR 暂不支持 API 调用。
+- **v3.0.5**：🔧 **修复** - 修正讯飞星辰平台模型名：使用 xop 前缀格式（`xoppaddleocrv16`、`xophunyuanocr`），注明 DeepSeek-OCR 暂不支持 API 调用。
 - **v3.0.4**：✨ **新增** - 添加讯飞星辰（MaaS）平台支持（兼容 OpenAI API 格式，默认模型 `PaddleOCR-VL-1.6`，默认地址 `https://maas-api.cn-huabei-1.xf-yun.com/v2`，支持 DeepSeek-OCR、HunyuanOCR 等模型）。
 - **v3.0.3**：✨ **新增** - 添加 Agnes 平台支持（兼容 OpenAI API 格式，默认模型 `agnes-2.0-flash`，默认地址 `https://apihub.agnes-ai.com/v1`）。
 - **v3.0.2**：🐛 **修复** - 修复 Ollama 平台使用推理模型（如 `openbmb/minicpm-v4.6`）时识别结果混入思维链内容的问题。新增通用思维链剥离函数 `strip_thinking_content`，自动移除 `...`、`<reasoning>...</reasoning>`、`<thought>...</thought>` 等推理模型输出的思维链标签（支持成对、仅开标签、仅闭标签及大小写不敏感），确保 OCR 结果干净。修复应用于 OllamaProvider 响应解析。
