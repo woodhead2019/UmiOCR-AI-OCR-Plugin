@@ -1498,14 +1498,15 @@ class XFlyunProvider(BaseProvider):
     """讯飞星辰MaaS服务提供商 - OpenAI兼容API
     文档: https://www.xfyun.cn/doc/spark/推理服务-http.html
           https://www.xfyun.cn/doc/spark/图像理解API-http.html
-    支持模型: PaddleOCR-VL-1.6、DeepSeek-OCR、HunyuanOCR 等
+    支持模型: xoppaddleocrv16(PaddleOCR-VL-1.6)、xophunyuanocr(HunyuanOCR)、xop35qwen2b(Qwen3.5-2B)
+    注意: 讯飞平台模型名需使用xop前缀格式；DeepSeek-OCR暂不支持API调用
     """
 
     def get_default_api_base(self):
         return "https://maas-api.cn-huabei-1.xf-yun.com/v2"
 
     def get_default_model(self):
-        return "PaddleOCR-VL-1.6"
+        return "xoppaddleocrv16"
 
     def build_headers(self):
         return {

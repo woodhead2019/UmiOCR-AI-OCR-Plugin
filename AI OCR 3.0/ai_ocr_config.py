@@ -116,7 +116,7 @@ PROVIDER_CONFIGS = {
     },
     "xflyun": {
         "api_base": "https://maas-api.cn-huabei-1.xf-yun.com/v2",
-        "model": "PaddleOCR-VL-1.6",
+        "model": "xoppaddleocrv16",
     },
 }
 
@@ -629,9 +629,9 @@ globalOptions = {
     },
     "xflyun_model": {
         "title": tr("讯飞星辰 模型"),
-        "default": "PaddleOCR-VL-1.6",
+        "default": "xoppaddleocrv16",
         "type": "text",
-        "toolTip": tr("讯飞星辰模型ID，如：PaddleOCR-VL-1.6、DeepSeek-OCR、HunyuanOCR（从服务管控页面获取对应ModelID）"),
+        "toolTip": tr("讯飞星辰模型ID（从服务管控页面获取）。注意讯飞平台模型名与其他平台不同：xoppaddleocrv16（PaddleOCR-VL-1.6）、xophunyuanocr（HunyuanOCR）、xop35qwen2b（Qwen3.5-2B）；DeepSeek-OCR暂不支持API调用"),
     },
     "xflyun_api_base": {
         "title": tr("讯飞星辰 API地址"),

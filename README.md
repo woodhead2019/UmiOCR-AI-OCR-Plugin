@@ -46,7 +46,7 @@
 | **小米MiMo** | mimo-v2.5/mimo-v2-omni | 小米自研AI模型，支持图片理解，**支持专属Base URL**（Code套餐用户可使用 token-plan-cn.xiaomimimo.com）|
 | **Longcat AI** | LongCat-Flash-Chat/LongCat-Flash-Thinking | 美团旗下AI平台，兼容OpenAI和Anthropic API格式，每日免费Token额度 |
 | **Agnes** | agnes-2.0-flash | 兼容OpenAI API格式，支持视觉识别，响应速度快 |
-| **讯飞星辰 (MaaS)** | PaddleOCR-VL-1.6/DeepSeek-OCR/HunyuanOCR | 讯飞开放平台MaaS服务，兼容OpenAI API格式，支持多模态视觉识别 |
+| **讯飞星辰 (MaaS)** | xoppaddleocrv16/xophunyuanocr/xop35qwen2b | 讯飞开放平台MaaS服务，兼容OpenAI API格式，支持多模态视觉识别。注意模型名需用xop前缀格式 |
 
 ### 🏠 本地服务商（离线识别）
 | 服务商 | 建议模型 | 特点 |
@@ -280,7 +280,11 @@
 2. 从服务管控页面获取 APIKey 和对应服务的 ModelID
 3. 兼容 OpenAI API 格式，支持图像理解多模态识别
 4. 默认API地址：`https://maas-api.cn-huabei-1.xf-yun.com/v2`（2026年1月10日后发布服务的用户）；存量用户可使用 `http://maas-api.cn-huabei-1.xf-yun.com/v1`
-5. 支持模型：PaddleOCR-VL-1.6（默认）、DeepSeek-OCR、HunyuanOCR 等
+5. **注意：讯飞平台模型名需使用xop前缀格式，与其他平台不同**：
+   - `xoppaddleocrv16`（PaddleOCR-VL-1.6，默认）
+   - `xophunyuanocr`（HunyuanOCR）
+   - `xop35qwen2b`（Qwen3.5-2B）
+   - DeepSeek-OCR 暂不支持 API 调用
 
 ### 百度飞桨OCR
 1. 访问 [AI Studio](https://aistudio.baidu.com/account/accessToken) 获取 Access Token
@@ -381,6 +385,7 @@
 
 
 ## 📝 版本历史
+- **v3.0.5**：🔧 **修复** - 修正讯飞星辰平台模型名：使用 xop 前缀格式（`xoppaddleocrv16`、`xophunyuanocr`、`xop35qwen2b`），注明 DeepSeek-OCR 暂不支持 API 调用。
 - **v3.0.4**：✨ **新增** - 添加讯飞星辰（MaaS）平台支持（兼容 OpenAI API 格式，默认模型 `PaddleOCR-VL-1.6`，默认地址 `https://maas-api.cn-huabei-1.xf-yun.com/v2`，支持 DeepSeek-OCR、HunyuanOCR 等模型）。
 - **v3.0.3**：✨ **新增** - 添加 Agnes 平台支持（兼容 OpenAI API 格式，默认模型 `agnes-2.0-flash`，默认地址 `https://apihub.agnes-ai.com/v1`）。
 - **v3.0.2**：🐛 **修复** - 修复 Ollama 平台使用推理模型（如 `openbmb/minicpm-v4.6`）时识别结果混入思维链内容的问题。新增通用思维链剥离函数 `strip_thinking_content`，自动移除 `...`、`<reasoning>...</reasoning>`、`<thought>...</thought>` 等推理模型输出的思维链标签（支持成对、仅开标签、仅闭标签及大小写不敏感），确保 OCR 结果干净。修复应用于 OllamaProvider 响应解析。
