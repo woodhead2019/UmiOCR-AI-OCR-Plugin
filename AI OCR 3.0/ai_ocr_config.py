@@ -114,6 +114,10 @@ PROVIDER_CONFIGS = {
         "api_base": "https://apihub.agnes-ai.com/v1",
         "model": "agnes-2.0-flash",
     },
+    "xflyun": {
+        "api_base": "https://maas-api.cn-huabei-1.xf-yun.com/v2",
+        "model": "PaddleOCR-VL-1.6",
+    },
 }
 
 # 获取服务商默认配置的辅助函数
@@ -206,6 +210,7 @@ globalOptions = {
             ["pp_structure_v3", "PP-StructureV3 (在线)"],
             ["longcat", "Longcat AI"],
             ["agnes", "Agnes"],
+            ["xflyun", "讯飞星辰 (MaaS)"],
 
         ],
         "toolTip": tr("选择当前要使用的AI服务商。所有服务商的配置都会保存，切换时无需重新输入。"),
@@ -615,6 +620,27 @@ globalOptions = {
         "advanced": True,
     },
 
+    # 讯飞星辰 MaaS 配置
+    "xflyun_api_key": {
+        "title": tr("讯飞星辰 API密钥"),
+        "default": "",
+        "type": "text",
+        "toolTip": tr("请输入讯飞星辰MaaS平台的APIKey（从服务管控页面获取）"),
+    },
+    "xflyun_model": {
+        "title": tr("讯飞星辰 模型"),
+        "default": "PaddleOCR-VL-1.6",
+        "type": "text",
+        "toolTip": tr("讯飞星辰模型ID，如：PaddleOCR-VL-1.6、DeepSeek-OCR、HunyuanOCR（从服务管控页面获取对应ModelID）"),
+    },
+    "xflyun_api_base": {
+        "title": tr("讯飞星辰 API地址"),
+        "default": "https://maas-api.cn-huabei-1.xf-yun.com/v2",
+        "type": "text",
+        "toolTip": tr("讯飞星辰MaaS API地址，默认：https://maas-api.cn-huabei-1.xf-yun.com/v2（2026年1月10日后发布服务的用户）；存量用户可使用 http://maas-api.cn-huabei-1.xf-yun.com/v1"),
+        "advanced": True,
+    },
+
     # PaddleOCR 在线配置（异步解析模式）
     "paddle_api_key": {
         "title": tr("PaddleOCR Token"),
@@ -736,6 +762,7 @@ localOptions = {
             ["pp_structure_v3", "PP-StructureV3 (在线)"],
             ["longcat", "Longcat AI"],
             ["agnes", "Agnes"],
+            ["xflyun", "讯飞星辰 (MaaS)"],
         ],
         "toolTip": tr("选择当前AI服务商。默认跟随全局设置，也可在此直接切换（切换后全局设置同步更新）。"),
     },

@@ -46,6 +46,7 @@
 | **小米MiMo** | mimo-v2.5/mimo-v2-omni | 小米自研AI模型，支持图片理解，**支持专属Base URL**（Code套餐用户可使用 token-plan-cn.xiaomimimo.com）|
 | **Longcat AI** | LongCat-Flash-Chat/LongCat-Flash-Thinking | 美团旗下AI平台，兼容OpenAI和Anthropic API格式，每日免费Token额度 |
 | **Agnes** | agnes-2.0-flash | 兼容OpenAI API格式，支持视觉识别，响应速度快 |
+| **讯飞星辰 (MaaS)** | PaddleOCR-VL-1.6/DeepSeek-OCR/HunyuanOCR | 讯飞开放平台MaaS服务，兼容OpenAI API格式，支持多模态视觉识别 |
 
 ### 🏠 本地服务商（离线识别）
 | 服务商 | 建议模型 | 特点 |
@@ -94,7 +95,7 @@
 |------|------|
 | 🚀 **高精度识别** | 基于最新的AI视觉模型，支持多种语言文字识别 |
 | 🌍 **多语言支持** | 支持中文、英文、日文、韩文、法文、德文、西班牙文、俄文、阿拉伯文等 |
-| ⚡ **多厂商选择** | 支持25+ AI服务商，包括OpenAI、Gemini、xAI、OpenRouter、硅基流动、豆包、Agnes等 |
+| ⚡ **多厂商选择** | 支持26+ AI服务商，包括OpenAI、Gemini、xAI、OpenRouter、硅基流动、豆包、Agnes、讯飞星辰等 |
 | 📍 **坐标提取** | 可选择输出文字的位置坐标信息 |
 | 📝 **Markdown输出** | 支持以Markdown格式直接输出识别结果，保留标题、列表、表格等结构 |
 | 🔧 **灵活配置** | 支持图像质量、尺寸、超时等多项参数调整 |
@@ -274,6 +275,13 @@
 4. 默认API地址：`https://apihub.agnes-ai.com/v1`
 5. 支持模型：agnes-2.0-flash 等
 
+### 讯飞星辰 (MaaS)
+1. 访问 [讯飞开放平台](https://www.xfyun.cn/)，在「服务管控」页面开通对应模型服务
+2. 从服务管控页面获取 APIKey 和对应服务的 ModelID
+3. 兼容 OpenAI API 格式，支持图像理解多模态识别
+4. 默认API地址：`https://maas-api.cn-huabei-1.xf-yun.com/v2`（2026年1月10日后发布服务的用户）；存量用户可使用 `http://maas-api.cn-huabei-1.xf-yun.com/v1`
+5. 支持模型：PaddleOCR-VL-1.6（默认）、DeepSeek-OCR、HunyuanOCR 等
+
 ### 百度飞桨OCR
 1. 访问 [AI Studio](https://aistudio.baidu.com/account/accessToken) 获取 Access Token
 2. 支持模型：PP-OCRv6 / PaddleOCR-VL-1.6 / PP-StructureV3
@@ -373,6 +381,7 @@
 
 
 ## 📝 版本历史
+- **v3.0.4**：✨ **新增** - 添加讯飞星辰（MaaS）平台支持（兼容 OpenAI API 格式，默认模型 `PaddleOCR-VL-1.6`，默认地址 `https://maas-api.cn-huabei-1.xf-yun.com/v2`，支持 DeepSeek-OCR、HunyuanOCR 等模型）。
 - **v3.0.3**：✨ **新增** - 添加 Agnes 平台支持（兼容 OpenAI API 格式，默认模型 `agnes-2.0-flash`，默认地址 `https://apihub.agnes-ai.com/v1`）。
 - **v3.0.2**：🐛 **修复** - 修复 Ollama 平台使用推理模型（如 `openbmb/minicpm-v4.6`）时识别结果混入思维链内容的问题。新增通用思维链剥离函数 `strip_thinking_content`，自动移除 `...`、`<reasoning>...</reasoning>`、`<thought>...</thought>` 等推理模型输出的思维链标签（支持成对、仅开标签、仅闭标签及大小写不敏感），确保 OCR 结果干净。修复应用于 OllamaProvider 响应解析。
 - **v3.0.1**：🐛 **重要修复** - 修复双通道模式下 Paddle 在线服务商（PaddleOCR-VL-1.6 / PP-StructureV3）完全不识别的问题。原实现将每个检测框裁剪后逐一发送到在线 API 识别，但 VL-1.6/StructureV3 是版面分析模型，对裁剪后的小文本块返回空结果，导致所有文本为空。现改为整图调用一次 API，再按行顺序匹配到本地检测框，同时将 N 次异步请求降为 1 次，大幅提升速度。检测器参数（box_thresh、merge_y_ratio、det_thresh、unclip_ratio）现可在设置面板配置；v6 检测器新增自适应 padding 以改善边缘文字检测。

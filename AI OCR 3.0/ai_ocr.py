@@ -1493,6 +1493,69 @@ class AgnesProvider(BaseProvider):
             raise Exception(f"解析Agnes响应失败: {str(e)}")
 
 
+# 讯飞星辰 MaaS Provider
+class XFlyunProvider(BaseProvider):
+    """讯飞星辰MaaS服务提供商 - OpenAI兼容API
+    文档: https://www.xfyun.cn/doc/spark/推理服务-http.html
+          https://www.xfyun.cn/doc/spark/图像理解API-http.html
+    支持模型: PaddleOCR-VL-1.6、DeepSeek-OCR、HunyuanOCR 等
+    """
+
+    def get_default_api_base(self):
+        return "https://maas-api.cn-huabei-1.xf-yun.com/v2"
+
+    def get_default_model(self):
+        return "PaddleOCR-VL-1.6"
+
+    def build_headers(self):
+        return {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.api_key}"
+        }
+
+    def build_payload(self, image_base64, prompt):
+        return {
+            "model": self.model or self.get_default_model(),
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt},
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/jpeg;base64,{image_base64}"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "max_tokens": 4000,
+            "stream": False
+        }
+
+    def parse_response(self, response_text):
+        try:
+            if not response_text or not response_text.strip():
+                raise Exception("服务器返回了空响应")
+
+            data = json.loads(response_text)
+
+            if "error" in data:
+                error_msg = data["error"].get("message", str(data["error"]))
+                raise Exception(f"API错误: {error_msg}")
+
+            if "choices" in data and len(data["choices"]) > 0:
+                content = data["choices"][0]["message"]["content"]
+                return content
+            else:
+                return None
+        except json.JSONDecodeError:
+            raise Exception(f"解析讯飞星辰响应失败: 无效的JSON格式。服务器返回内容: {response_text[:500]}")
+        except Exception as e:
+            raise Exception(f"解析讯飞星辰响应失败: {str(e)}")
+
+
 # llama.cpp Provider (本地)
 class LlamaCppProvider(BaseProvider):
     """llama.cpp本地服务提供商 - OpenAI兼容API"""
@@ -1578,6 +1641,7 @@ class ProviderFactory:
             "pp_structure_v3": PPStructureV3Provider,  # 新增：PP-StructureV3 Provider
             "longcat": LongcatProvider,  # 新增：Longcat AI Provider
             "agnes": AgnesProvider,  # 新增：Agnes Provider
+            "xflyun": XFlyunProvider,  # 新增：讯飞星辰 MaaS Provider
             "llamacpp": LlamaCppProvider,
 
         }

@@ -46,6 +46,7 @@
 | **小米MiMo** | mimo-v2.5/mimo-v2-omni | 小米自研AI模型，支持图片理解，**支持专属Base URL**（Code套餐用户可使用 token-plan-cn.xiaomimimo.com）|
 | **Longcat AI** | LongCat-Flash-Chat/LongCat-Flash-Thinking | 美团旗下AI平台，兼容OpenAI和Anthropic API格式，每日免费Token额度 |
 | **Agnes** | agnes-2.0-flash | 兼容OpenAI API格式，支持视觉识别，响应速度快 |
+| **讯飞星辰 (MaaS)** | PaddleOCR-VL-1.6/DeepSeek-OCR/HunyuanOCR | 讯飞开放平台MaaS服务，兼容OpenAI API格式，支持多模态视觉识别 |
 
 ### 🏠 本地服务商（离线识别）
 | 服务商 | 建议模型 | 特点 |
@@ -94,7 +95,7 @@
 |------|------|
 | 🚀 **高精度识别** | 基于最新的AI视觉模型，支持多种语言文字识别 |
 | 🌍 **多语言支持** | 支持中文、英文、日文、韩文、法文、德文、西班牙文、俄文、阿拉伯文等 |
-| ⚡ **多厂商选择** | 支持25+ AI服务商，包括OpenAI、Gemini、xAI、OpenRouter、硅基流动、豆包、Agnes等 |
+| ⚡ **多厂商选择** | 支持26+ AI服务商，包括OpenAI、Gemini、xAI、OpenRouter、硅基流动、豆包、Agnes、讯飞星辰等 |
 | 📍 **坐标提取** | 可选择输出文字的位置坐标信息 |
 | 📝 **Markdown输出** | 支持以Markdown格式直接输出识别结果，保留标题、列表、表格等结构 |
 | 🔧 **灵活配置** | 支持图像质量、尺寸、超时等多项参数调整 |
@@ -274,6 +275,13 @@
 4. 默认API地址：`https://apihub.agnes-ai.com/v1`
 5. 支持模型：agnes-2.0-flash 等
 
+### 讯飞星辰 (MaaS)
+1. 访问 [讯飞开放平台](https://www.xfyun.cn/)，在「服务管控」页面开通对应模型服务
+2. 从服务管控页面获取 APIKey 和对应服务的 ModelID
+3. 兼容 OpenAI API 格式，支持图像理解多模态识别
+4. 默认API地址：`https://maas-api.cn-huabei-1.xf-yun.com/v2`（2026年1月10日后发布服务的用户）；存量用户可使用 `http://maas-api.cn-huabei-1.xf-yun.com/v1`
+5. 支持模型：PaddleOCR-VL-1.6（默认）、DeepSeek-OCR、HunyuanOCR 等
+
 ### 百度飞桨OCR
 1. 访问 [AI Studio](https://aistudio.baidu.com/account/accessToken) 获取 Access Token
 2. 支持模型：PP-OCRv6 / PaddleOCR-VL-1.6 / PP-StructureV3
@@ -373,6 +381,7 @@
 
 
 ## 📝 版本历史
+- **v3.0.4**：✨ **新增** - 添加讯飞星辰（MaaS）平台支持（兼容 OpenAI API 格式，默认模型 `PaddleOCR-VL-1.6`，默认地址 `https://maas-api.cn-huabei-1.xf-yun.com/v2`，支持 DeepSeek-OCR、HunyuanOCR 等模型）。
 - **v3.0.3**：✨ **新增** - 添加 Agnes 平台支持（兼容 OpenAI API 格式，默认模型 `agnes-2.0-flash`，默认地址 `https://apihub.agnes-ai.com/v1`）。
 - **v3.0.0**：🚀 **重大更新** - 双通道模式全面升级！将本地检测模块从基于C++的PP-OCRv3替换为基于ONNX的PP-OCRv6，速度更快、精度更高、体积更小（约40MB）。新增检测器版本和模型大小配置项，用户可选择Small/Medium/Tiny模型。修复检测模块遮蔽AI识别结果的问题：检测器现在仅负责文本块定位，不再返回识别文本，识别任务完全交由AI完成。新增腾讯混元（Hunyuan）平台支持；移除无问芯穹（Infinigence）平台（官方已停止个人用户服务）。
 - **v2.9.9**：在各功能板块的"文字识别(AI OCR)"设置顶部新增"当前AI服务商"快捷切换，默认跟随全局设置，也可直接选择服务商覆盖（选择后全局设置同步更新），无需频繁打开全局设置即可切换服务商。
