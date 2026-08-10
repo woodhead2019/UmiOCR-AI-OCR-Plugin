@@ -65,17 +65,84 @@ def strip_thinking_content(content):
 
     return content.strip()
 
+# 令牌桶速率限制器（线程安全）
+class TokenBucket:
+    """令牌桶限速器：按固定速率补充令牌，桶容量有上限。
+
+    用于控制"单位时间内"的 API 请求总数，主动避免触发服务商 429 限流。
+    支持短时突发（桶内积攒的令牌），同时严格保证长期平均速率不超过设定值。
+    """
+
+    def __init__(self, rate_per_minute, burst=None):
+        """
+        :param rate_per_minute: 每分钟令牌补充速率（即每分钟最大请求数）
+        :param burst: 桶容量（允许的突发请求数），默认等于速率（约1秒的突发量）
+        """
+        self.rate_per_minute = max(1, int(rate_per_minute))
+        self.capacity = max(1, int(burst)) if burst else self.rate_per_minute
+        self.tokens = float(self.capacity)  # 初始满桶，允许开局快速识别
+        self.rate_per_sec = self.rate_per_minute / 60.0
+        self.last_refill = time.time()
+        self.lock = threading.Lock()
+
+    def _refill(self):
+        """按经过的时间补充令牌"""
+        now = time.time()
+        elapsed = now - self.last_refill
+        self.tokens = min(self.capacity, self.tokens + elapsed * self.rate_per_sec)
+        self.last_refill = now
+
+    def acquire(self, timeout=None):
+        """获取一个令牌；桶空时阻塞等待，直至有令牌可用（或超时抛出异常）"""
+        deadline = (time.time() + timeout) if timeout else None
+        while True:
+            with self.lock:
+                self._refill()
+                if self.tokens >= 1.0:
+                    self.tokens -= 1.0
+                    return True
+                # 计算还需等待时间
+                wait = (1.0 - self.tokens) / self.rate_per_sec
+            if deadline is not None and time.time() + wait > deadline:
+                raise Exception(f"速率限制等待超时（{timeout}s内未获得请求令牌）")
+            time.sleep(min(wait, 0.1))
+
+
 # Provider基类
 class BaseProvider:
     """AI OCR服务提供商基类"""
-    
+
+    @staticmethod
+    def _split_api_keys(api_key):
+        """解析API密钥字段：支持用逗号/分号/换行分隔多个密钥（密钥池）。
+
+        单个密钥时返回单元素列表；分隔符解析遵循"明文口令不允许独立成字段"原则，
+        只按用户显式填入的分隔符切分。空字符串不参与轮询。
+        """
+        if not api_key:
+            return []
+        keys = re.split(r"[,;\n]", str(api_key))
+        return [k.strip() for k in keys if k and k.strip()]
+
     def __init__(self, api_key, api_base=None, model=None, timeout=30, proxy_url=None):
-        self.api_key = api_key
+        if api_key:
+            self.api_keys = self._split_api_keys(api_key) or [api_key]
+        else:
+            self.api_keys = []
+        self._key_index = 0
+        self.api_key = self.api_keys[0] if self.api_keys else (api_key or "")
         self.api_base = api_base
         self.model = model
         self.timeout = timeout
         self.proxy_url = proxy_url
-        
+
+    def rotate_key(self):
+        """轮询切换到下一个API密钥（多密钥池场景）。单密钥时无副作用。"""
+        if len(self.api_keys) > 1:
+            self._key_index = (self._key_index + 1) % len(self.api_keys)
+            self.api_key = self.api_keys[self._key_index]
+        return self.api_key
+
     def get_default_api_base(self):
         """获取默认API基础URL"""
         raise NotImplementedError
@@ -1618,6 +1685,7 @@ class ProviderFactory:
     def create_provider(provider_name, api_key, api_base=None, model=None, timeout=30, proxy_url=None):
         providers = {
             "openai": OpenAIProvider,
+            "custom_openai": OpenAIProvider,  # 自定义OpenAI兼容服务商，复用OpenAI实现
             "gemini": GeminiProvider,
             "xai": XAIProvider,
             "openrouter": OpenRouterProvider,
@@ -2032,6 +2100,8 @@ class Api:
         self.http_client = None
         # 兼容新旧键名
         self.max_concurrent = globalArgd.get("z_max_concurrent", globalArgd.get("max_concurrent", 3))
+        # 令牌桶限速器（单位时间请求数控制，0=不限制）
+        self.rate_limiter = TokenBucket(int(globalArgd.get("z_rate_limit", 0))) if int(globalArgd.get("z_rate_limit", 0)) > 0 else None
         self.executor = None
         
         # 保存全局配置
@@ -2211,6 +2281,16 @@ class Api:
                     self._load_v6_detector(v6_detector_path, base_dir, model_filename, limit_side_len)
                     return
                 except Exception as e_v6:
+                    if sys.platform != 'win32':
+                        # Linux/macOS：内置 ONNX Runtime / pyclipper 库与旧版 v3 检测器
+                        # （PaddleOCR-json.exe）均为 Windows 专属，无法复用
+                        self.detector = None
+                        raise RuntimeError(
+                            f"当前平台 ({sys.platform}) 无法加载内置检测器（仅支持 Windows）。"
+                            f"Linux/macOS 可尝试通过 pip 安装 onnxruntime 与 opencv-python 后重试；"
+                            f"或改用\"仅AI高精度识别\"策略（纯文本，不依赖本地检测）。"
+                            f"原始错误: {e_v6}"
+                        )
                     print(f"[AIOCR] PP-OCRv6 ONNX 检测器加载失败: {e_v6}，尝试回退到旧版...")
                     # 继续尝试旧版
 
@@ -2451,7 +2531,10 @@ class Api:
         try:
             self._ensure_paddle_detector()
         except Exception as e:
-            return {"code": 101, "data": f"[Error] {e}"}
+            # 检测器不可用（如 Linux 下内置 ONNX 库为 Windows 专属）时，
+            # 回退到 AI 直出，保证 AI 服务仍被调用（issue #28）
+            print(f"[AIOCR] 文本检测器不可用，回退到AI直出: {e}")
+            return self._run_ocr(image_base64, getattr(self, 'local_config', {}) or {})
         local = getattr(self, 'local_config', {})
         max_boxes = int(local.get('dual_max_boxes', 100))
         min_area = int(local.get('dual_min_area', 0))
@@ -2466,11 +2549,13 @@ class Api:
             print(f"[AIOCR] Paddle识别完成，耗时 {cost}s")
         except concurrent.futures.TimeoutError:
             print(f"[AIOCR] Paddle识别超时({paddle_timeout}s)，回退到AI直出")
-            return self._run_ocr(image_base64, self.local_config)
+            return self._run_ocr(image_base64, getattr(self, 'local_config', {}) or {})
         except Exception as e:
-            return {"code": 101, "data": f"Paddle识别异常: {str(e)}"}
+            print(f"[AIOCR] Paddle识别异常，回退到AI直出: {e}")
+            return self._run_ocr(image_base64, getattr(self, 'local_config', {}) or {})
         if not isinstance(det, dict) or det.get('code') != 100 or not isinstance(det.get('data'), list):
-            return {"code": 101, "data": "Paddle识别失败"}
+            print("[AIOCR] Paddle识别失败（无效返回），回退到AI直出")
+            return self._run_ocr(image_base64, getattr(self, 'local_config', {}) or {})
         items = det.get('data', [])
         if not items:
             return det
@@ -2906,7 +2991,12 @@ class Api:
                 except Exception as e:
                     if attempt == max_retries:
                         raise e
-                    time.sleep(1)  # 重试前等待
+                    # 429限流：指数退避等待更久；其他错误按次数递增等待
+                    err_text = str(e)
+                    if "429" in err_text or "Too Many Requests" in err_text:
+                        time.sleep(min(2 ** attempt * 5, 30))
+                    else:
+                        time.sleep(1 + attempt)  # 重试前等待
                     
         except Exception as e:
             return self._create_error_result(str(e))
@@ -2956,6 +3046,16 @@ class Api:
             provider_name = self.global_config.get("a_provider", self.global_config.get("provider", "unknown"))
         except Exception:
             provider_name = "unknown"
+        # 多密钥池：每次调用前轮询到下一个密钥（单密钥时无副作用）
+        try:
+            if hasattr(self.provider, "rotate_key"):
+                self.provider.rotate_key()
+        except Exception:
+            pass
+        # 令牌桶限速：所有"提交类"API请求前获取令牌（含Paddle/MinerU/NIM异步提交；
+        # 不限制任务轮询GET，避免拖慢识别）
+        if self.rate_limiter is not None:
+            self.rate_limiter.acquire(timeout=min(self.http_client.timeout, 60))
         print(f"[AIOCR] 调用 {provider_name} / 模型 {getattr(self.provider, 'model', None)} / 超时 {getattr(self.http_client, 'timeout', None)}s")
         if provider_name == "mineru":
             return self._send_mineru_request(image_base64)

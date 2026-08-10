@@ -12,6 +12,10 @@ PROVIDER_CONFIGS = {
         "api_base": "https://api.openai.com/v1",
         "model": "",  # 用户自定义
     },
+    "custom_openai": {  # 自定义OpenAI兼容服务商
+        "api_base": "https://api.openai.com/v1",
+        "model": "",  # 用户自定义
+    },
     "gemini": {
         "api_base": "https://generativelanguage.googleapis.com/v1beta",
         "model": "",  # 用户自定义
@@ -185,6 +189,7 @@ globalOptions = {
         "default": "openai",
         "optionsList": [
             ["openai", "OpenAI"],
+            ["custom_openai", tr("自定义OpenAI兼容 (Custom)")],
             ["gemini", "Google Gemini"],
             ["xai", "xAI Grok"],
             ["openrouter", "OpenRouter"],
@@ -300,6 +305,26 @@ globalOptions = {
         "default": "gpt-5-mini",
         "type": "text",
         "toolTip": tr("OpenAI模型名称，如：gpt-5-mini, gpt-4o"),
+    },
+
+    # 自定义OpenAI兼容服务商配置
+    "custom_openai_api_key": {
+        "title": tr("自定义OpenAI兼容 API密钥"),
+        "default": "",
+        "type": "text",
+        "toolTip": tr("请输入自定义OpenAI兼容平台的API密钥"),
+    },
+    "custom_openai_model": {
+        "title": tr("自定义OpenAI兼容 模型"),
+        "default": "",
+        "type": "text",
+        "toolTip": tr("OpenAI兼容模型名称，如：gpt-4o, qwen-vl-plus, deepseek-vl2 等"),
+    },
+    "custom_openai_api_base": {
+        "title": tr("自定义OpenAI兼容 API地址"),
+        "default": "https://api.openai.com/v1",
+        "type": "text",
+        "toolTip": tr("OpenAI兼容API地址。默认：https://api.openai.com/v1 ；可填写任意兼容平台（如 vLLM、One API、new-api 中转、自建服务等）的地址，请求将发送到 {地址}/chat/completions"),
     },
 
     # OpenRouter配置
@@ -723,6 +748,16 @@ globalOptions = {
         "toolTip": tr("批量处理时的最大并发请求数。"),
         "advanced": True,
     },
+    "z_rate_limit": {
+        "title": tr("每分钟最大请求数"),
+        "default": 0,
+        "min": 0,
+        "max": 600,
+        "unit": tr("次/分钟"),
+        "isInt": True,
+        "toolTip": tr("API请求速率限制（令牌桶算法，主动避免429限流）。0表示不限制。建议设为服务商限额的80%左右。密钥池：在任意服务商的API密钥框中填写多个密钥（用逗号、分号或换行分隔），插件将自动轮询使用，分摊请求压力。"),
+        "advanced": True,
+    },
 }
 
 # 局部配置项
@@ -737,6 +772,7 @@ localOptions = {
         "optionsList": [
             ["", tr("跟随全局设置")],
             ["openai", "OpenAI"],
+            ["custom_openai", tr("自定义OpenAI兼容 (Custom)")],
             ["gemini", "Google Gemini"],
             ["xai", "xAI Grok"],
             ["openrouter", "OpenRouter"],
